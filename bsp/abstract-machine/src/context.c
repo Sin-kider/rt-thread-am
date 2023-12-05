@@ -11,12 +11,16 @@ volatile rt_ubase_t rt_from = 0;
 volatile rt_ubase_t rt_to = 0;
 
 static Context* ev_handler(Event e, Context *c) {
+  assert(rt_to != 0);
   switch (e.event) {
     case EVENT_YIELD:
       if (rt_from != 0) {
         *(Context **)rt_from = c;
       }
+      assert(rt_to != 0);
       c = *(Context **)rt_to;
+      break;
+    case EVENT_IRQ_TIMER:
       break;
     default: printf("Unhandled event ID = %d\n", e.event); assert(0);
   }
